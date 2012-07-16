@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset=utf-8 />
+<title>Basic Drag and Drop</title>
+<style>
+.drop {
+  min-height: 100px;
+  width: 200px;
+  border: 3px dashed #ccc;
+  margin: 10px;
+  padding: 10px;
+  clear: left;
+}
+p {
+  margin: 3px 0;
+}
+
+.drag {
+  height: 48px;
+  width: 48px;
+  float: left;
+  -khtml-user-drag: element;
+  margin: 10px;
+}
+</style>
+</head>
+<body>
+  <div id="remy" draggable="true"></div>
+  <div id="brucel" draggable="true"></div>
+  <div id="Rich_Clark" draggable="true"></div>
+  <div id="leads" draggable="true"></div>
+  <div id="akamike" draggable="true"></div>
+  <div id="jackosborne" draggable="true"></div>
+  
+  <div id="dropA" class="drop"></div>
+  <div id="dropB" class="drop"></div>
+ 
+  <div id="msgArea"></div>
+  <script src="/~dotsony/common/util.js"></script>
+  <script src="/~dotsony/common/dnd.js"></script>
+  <script>
+    var dragItems = document.querySelectorAll('[draggable=true]');
+    for (var i = 0; i < dragItems.length; i++) {
+	var e = dragItems[i];
+	dnd.makeDraggable(e, "copy");
+        e.style.background = url(e.id);
+    }
+
+    dnd.makeReorderable(document.getElementById('dropA'));
+    dnd.makeReorderable(document.getElementById('dropB'));
+  </script>
+</html>
