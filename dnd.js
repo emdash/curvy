@@ -1,8 +1,10 @@
+// depends: ~dotsony/common/util.js
 var dnd = (function() {
 var nelems;
 var curElem;
 var toInsert;
 var ret = {};
+
 
 function cancel(e) {
     if (e.preventDefault) {
@@ -12,10 +14,8 @@ function cancel(e) {
 }
 
 function makeElement(data) {
-    var ret = document.createElement('div');
-    ret.style.background = url(data);
-    ret.id = data + nelems++;
-    var i = 0;
+    var ret = curElem.cloneNode(true);
+    ret.id = ret.id + nelems++;
     makeDraggable(ret, "move");
     return ret;
 }
@@ -50,28 +50,29 @@ function makeDroppable(elt, drop, over, enter, leave) {
 			 compose(drop ? drop : nullfunc, cancel));
 }
 
-function makeReorderable(elt) {
+function enter (e) {
+    var sourceid = curElem.id;
 
-    function enter (e) {
-	var sourceid = curElem.id;
-
-	if (!toInsert) {
-	    switch (curElem.dropEffect) {
-	    case 'copy':
-		toInsert = makeElement(sourceid);
-		break;
-	    case 'move':
-		toInsert =  curElem;
-		break;
-	    default:
-		toInsert = makeElement(sourceid);
-		break;
-	    };
-	}
+    if (!toInsert) {
+	switch (curElem.dropEffect) {
+	case 'copy':
+	    toInsert = makeElement(sourceid);
+	    break;
+	case 'move':
+	    toInsert =  curElem;
+	    break;
+	default:
+	    toInsert = makeElement(sourceid);
+	    break;
+	};
     }
+}
+
+function makeReorderable(elt) {
 
     function reorder (e) {
 	var nearest = nearestChild(this, e.clientX, e.clientY);
+	unmove(toInsert);
 	this.insertBefore(toInsert, nearest);
     }
 
@@ -81,6 +82,27 @@ function makeReorderable(elt) {
     }
 
     makeDroppable(elt, drop, reorder, enter);
+}
+
+function makeNodeEater(elt) {
+    function drop(e)
+    {
+	unparent(toInsert);
+	toInsert = null;
+    }
+    makeDroppable(elt, drop, null, enter);
+}
+
+function makeScratchArea(elt) {
+    function drop(e)
+    {
+	if (toInsert) {
+	    move(toInsert, e.pageX, e.pageY);
+	    toInsert = null;
+	}
+    }
+
+    makeDroppable(elt, drop, null, enter);
 }
 
 function nearestChild(elt, x, y) {
@@ -109,5 +131,7 @@ function nearestChild(elt, x, y) {
 ret.makeDraggable = makeDraggable;
 ret.makeDroppable = makeDroppable;
 ret.makeReorderable = makeReorderable;
+ret.makeNodeEater = makeNodeEater;
+ret.makeScratchArea = makeScratchArea;
 return ret;
 })();
