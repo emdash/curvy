@@ -164,3 +164,24 @@ function mobileScrollFix(element) {
 	element.ontouchmove = touchmove;
     }
 }
+
+
+// Page load handling -- don't overwrite document.onreadystatechange
+var whenReady = (function () {
+   "use strict";
+
+   var handlers = [];
+   var i;
+
+   document.onreadystatechange = function () {
+       for (i = 0; i < handlers.length; i++) {
+	   handlers[i]();
+       }
+   };
+
+   function ready(handler) {
+       handlers.push(handler);
+   }
+
+   return ready;
+})();
