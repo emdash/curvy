@@ -32,6 +32,10 @@ function color (r, g, b, a) {
 		     a + ")");
 }
 
+function restyle() {
+    document.body.className = document.body.className;
+}
+
 
 // closure library
 
