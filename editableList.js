@@ -1,3 +1,54 @@
+/* editableList.js
+ *
+ * An MVC and ajax-friendly list controler with user-editable items.
+ *
+ * editableList.list - Transforms an element into an editable list.
+ *
+ *  Once "listified", the element will ensure that there is exactly
+ *  one child element for each item in its model.
+ *
+ *  Any html element that can contain children can become an editable
+ *  list by calling editableList.list() on it directly.
+ *
+ *  An alternative way to create editable lists is with the
+ *  <editable-list> tag. This module registers a page onload handler
+ *  which will automagically call editableList.list() on the
+ *  element. You may wish to include editableList.css to apply a basic
+ *  default style.
+ *
+ * editableList.item - A factory function to create editable list
+ *  items.
+ *
+ *  The default implementation presents a plain list item with no
+ *  additional controls. It can be customized if different behavior is
+ *  desired.
+ *
+ *  When the "edit mode" of the parent list is truthy, list items are
+ *  made directly editable. The default behavior is to update the list
+ *  model when an item loses focus. The current implementation also
+ *  requires that the browser support the contentEditable attribute
+ *  correctly.
+ *
+ *  List Item Interface:
+ *
+ *  + onEnterKey(): called when the enter key is pressed on the
+ *   element. The default behavior is to blur the item, thereby
+ *   commiting changes to the model.
+ *
+ *  + getContent(): returns the current content of the item.
+ *
+ *  + setContent(): updates the current content of the item.
+ *
+ *  + selectAll():  selects the contents of the item
+ *
+ *  + setEditable(editable): sets the edit state of the item. should be
+ *    boolean true or false
+ *
+ *
+ * Requires: util.js
+ */
+
+
 var editableList = (function () {
 "use strict";
 
