@@ -115,7 +115,7 @@ function editableListItem(list, model, items) {
     };
 
     item.setEditable = function (editable) {
-	item.contentEditable = editable;
+	item.setAttribute("contentEditable", editable);
     };
 
     return item;
@@ -125,7 +125,9 @@ function editableListItem(list, model, items) {
 function editableList(ret, model, listItem) {
     var items = [];
     var selected;
-    var editing = "false";
+
+    model = model || listModel("New Item");
+    listItem = listItem || editableListItem;
 
     function itemAdded(index, attrs) {
 	var item = listItem(ret, model, items);
@@ -140,7 +142,7 @@ function editableList(ret, model, listItem) {
 	    model.itemChanged(index, attr, attrs[attr]);
 	}
 
-	item.setEditable(editing);
+	item.setEditable(ret.getEditMode());
 	item.focus();
     }
 
@@ -153,10 +155,7 @@ function editableList(ret, model, listItem) {
 
 	if (attr == "content") {
 	    item.setContent(value);
-
-	    if (editing == "true") {
-		item.setEditable(true);
-	    }
+	    item.setEditable(ret.getEditMode());
 	} else {
 	    item.setAttribute(attr, value);
 	}
@@ -190,12 +189,14 @@ function editableList(ret, model, listItem) {
     };
 
     ret.getEditMode = function (mode) {
-	return editing;
+	return ret.getAttribute("editable") == "true";
     };
 
     ret.setEditMode = function (mode) {
 	var li;
-	editing = mode;
+
+	ret.setAttribute("editable", mode);
+
 	for (li = ret.firstChild; li !== null; li = li.nextSibling) {
 	    li.setEditable(mode);
 	}
