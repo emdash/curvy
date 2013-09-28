@@ -52,6 +52,23 @@
 var editableList = (function () {
 "use strict";
 
+function readyHandler() {
+    var i;
+    var elements;
+
+    if (document.readyState == "complete") {
+	console.log("got here");
+
+	elements = document.getElementsByTagName("editable-list");
+	for (i = 0; i < elements.length; i++) {
+	    console.log(elements[i]);
+	    editableList(elements[i]);
+	};
+    }
+};
+
+whenReady(readyHandler);
+
 function editableListItem(list, model, items) {
     var item = el("div");
     var content;
@@ -105,7 +122,7 @@ function editableListItem(list, model, items) {
 }
 
 
-function editableList(model, ret, listItem) {
+function editableList(ret, model, listItem) {
     var items = [];
     var selected;
     var editing = "false";
