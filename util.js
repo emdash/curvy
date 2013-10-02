@@ -187,3 +187,34 @@ var whenReady = (function () {
 
    return ready;
 })();
+
+
+// Event-driven programming support
+
+function signal () {
+    var handlers = {};
+    var ret = {};
+    var id = 0;
+
+    ret.connect = function (handler) {
+	handlers[id] = handler;
+	return id++;
+    };
+
+    ret.disconnect = function (id) {
+	console.log(handlers, id);
+	delete handlers[id];
+    };
+
+    ret.emit = function () {
+	var args = arguments;
+	var that = this;
+
+	for (handler in handlers) {
+	   handlers[handler].apply(that, args);
+	};
+    };
+
+    return ret;
+};
+
