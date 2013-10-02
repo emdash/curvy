@@ -56,14 +56,10 @@ function readyHandler() {
     var i;
     var elements;
 
-    if (document.readyState == "complete") {
-	console.log("got here");
-
-	elements = document.getElementsByTagName("editable-list");
-	for (i = 0; i < elements.length; i++) {
-	    console.log(elements[i]);
-	    editableList(elements[i]);
-	};
+    elements = document.getElementsByTagName("editable-list");
+    for (i = 0; i < elements.length; i++) {
+	console.log("Converting to editable list: ", elements[i]);
+	editableList(elements[i]);
     }
 };
 
