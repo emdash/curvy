@@ -174,8 +174,10 @@ var whenReady = (function () {
    var i;
 
    document.onreadystatechange = function () {
-       for (i = 0; i < handlers.length; i++) {
-	   handlers[i]();
+       if (document.readyState === "complete") {
+	   for (i = 0; i < handlers.length; i++) {
+	       handlers[i]();
+	   }
        }
    };
 
