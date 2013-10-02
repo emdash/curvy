@@ -121,9 +121,20 @@ function editableListItem(list, model, items) {
 function editableList(ret, model, listItem) {
     var items = [];
     var selected;
+    var editable;
+    var handlers;
 
-    model = model || listModel("New Item");
-    listItem = listItem || editableListItem;
+    model = model
+	|| eval(ret.getAttribute("model"))
+	|| listModel("New Item");
+
+    console.log(model);
+
+    listItem = listItem
+	|| eval(ret.getAttribute("listItem"))
+	|| editableListItem;
+
+    console.log(listItem);
 
     function itemAdded(index, attrs) {
 	var item = listItem(ret, model, items);
