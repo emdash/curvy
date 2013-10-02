@@ -146,7 +146,7 @@ function editableList(ret, model, listItem) {
 	items.splice(index, 0, item);
 
 	for (attr in attrs) {
-	    model.itemChanged(index, attr, attrs[attr]);
+	    itemChanged(index, attr, attrs[attr]);
 	}
 
 	item.setEditable(ret.getEditMode());
@@ -205,20 +205,38 @@ function editableList(ret, model, listItem) {
 	ret.setAttribute("editable", mode);
 
 	for (li = ret.firstChild; li !== null; li = li.nextSibling) {
-	    li.setEditable(mode);
+	    li.setEditable && li.setEditable(mode);
 	}
     };
 
     ret.setModel = function (newModel) {
-	model = newModel;
+	var i = 0;
+	var editMode = ret.getEditMode();
 
-	if (model) {
-	    model.itemAdded = itemAdded;
-	    model.itemChanged = itemChanged;
-	    model.itemRemoved = itemRemoved;
+	ret.setEditMode(false);
+
+	if (handlers) {
+	    model.itemAdded.disconnect(handlers.added);
+	    model.itemChanged.disconnect(handlers.changed);
+	    model.itemRemoved.disconnect(handlers.removed);
+	    handlers = null;
 	}
 
+	model = newModel;
+	items = [];
 	ret.innerHTML = "";
+
+	if (model) {
+	    handlers = {};
+
+	    handlers.added = model.itemAdded.connect(itemAdded);
+	    handlers.changed = model.itemChanged.connect(itemChanged);
+	    handlers.removed = model.itemRemoved.connect(itemRemoved);
+
+	    model.forEach(function (item) { itemAdded(i++, item); });
+	}
+
+	ret.setEditMode(editMode);
     };
 
     ret.setSelected = function (item) {
@@ -235,9 +253,9 @@ function listModel(defaultItem) {
     var items = [];
     var ret = {};
 
-    ret.itemChanged = function () {};
-    ret.itemAdded = function () {};
-    ret.itemRemoved = function () {};
+    ret.itemChanged = signal();
+    ret.itemAdded = signal();
+    ret.itemRemoved = signal();
 
     ret.forEach = function (closure) {
 	items.forEach(closure);
@@ -258,7 +276,7 @@ function listModel(defaultItem) {
 	for (attr in attrs) {
 	    value = attrs[attr];
 	    items[index][attr] = value;
-	    ret.itemChanged(index, attr, value);
+	    ret.itemChanged.emit(index, attr, value);
 	}
     };
 
@@ -266,17 +284,16 @@ function listModel(defaultItem) {
 	console.log("insert");
 	attrs.content = attrs.content || defaultItem;
 	items.splice(index, 0, attrs);
-	ret.itemAdded(index, attrs);
+	ret.itemAdded.emit(index, attrs);
     };
 
     ret.remove = function (index) {
 	items.splice(index, 1);
-	ret.itemRemoved (index);
+	ret.itemRemoved.emit(index);
     };
 
     return ret;
 }
-
 
 return {
     list: editableList,
