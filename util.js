@@ -202,7 +202,6 @@ function signal () {
     };
 
     ret.disconnect = function (id) {
-	console.log(handlers, id);
 	delete handlers[id];
     };
 
@@ -218,3 +217,18 @@ function signal () {
     return ret;
 };
 
+// webkit-only implementation.
+function DOMAttrModified(element, attr, callback) {
+
+    var observer = new WebKitMutationObserver(handler);
+
+    function handler(mutations) {
+	mutations.forEach(function (m) {
+	  if (m.attributeName === attr) {
+	      callback();
+	  }
+	});
+    }
+
+    observer.observe(element, {attributes:true});
+}
