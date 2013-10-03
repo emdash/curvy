@@ -134,8 +134,6 @@ function editableList(ret, model, listItem) {
 	|| eval(ret.getAttribute("listItem"))
 	|| editableListItem;
 
-    console.log(listItem);
-
     function itemAdded(index, attrs) {
 	var item = listItem(ret, model, items);
 	var attr;
