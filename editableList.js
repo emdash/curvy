@@ -123,6 +123,8 @@ function editableList(ret, model, listItem) {
     var selected;
     var editable;
     var handlers;
+    var scrollOnInsert;
+    var scrollOffset;
 
     model = model
 	|| eval(ret.getAttribute("model"))
@@ -134,13 +136,21 @@ function editableList(ret, model, listItem) {
 	|| eval(ret.getAttribute("listItem"))
 	|| editableListItem;
 
+    scrollOnInsert = eval(ret.getAttribute("scrollOnInsert"))
+	|| false;
+
+    scrollOffset = eval(ret.getAttribute("scrollOffset"))
+	|| 0;
+
     function itemAdded(index, attrs) {
 	var item = listItem(ret, model, items);
 	var attr;
+	var rect;
+	var before = items[index];
 
 	console.log("item added " + attrs.content);
 
-	ret.insertBefore(item, items[index]);
+	ret.insertBefore(item, before);
 	items.splice(index, 0, item);
 
 	for (attr in attrs) {
@@ -148,6 +158,9 @@ function editableList(ret, model, listItem) {
 	}
 
 	item.setEditable(ret.getEditMode());
+	if (scrollOnInsert) {
+	    window.scrollTo(0, item.offsetTop + scrollOffset);
+	}
 	item.focus();
     }
 
