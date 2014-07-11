@@ -217,10 +217,15 @@ function signal () {
     return ret;
 };
 
-// webkit-only implementation.
-function DOMAttrModified(element, attr, callback) {
 
-    var observer = new WebKitMutationObserver(handler);
+function DOMAttrModified(element, attr, callback) {
+    var observer;
+
+    try {
+	observer = new WebKitMutationObserver(handler);
+    } catch (e) {
+	observer = new MutationObserver(handler);
+    }
 
     function handler(mutations) {
 	mutations.forEach(function (m) {
