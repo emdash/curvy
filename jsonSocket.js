@@ -39,10 +39,15 @@ function socket(url) {
 	sock.onclose = handler;
     };
 
+    function setConnectHandler(handler) {
+	sock.onopen = handler;
+    };
+
     return {
 	send: send,
 	setMsgHandler: setMsgHandler,
-	setErrHandler: setErrHandler
+	setErrHandler: setErrHandler,
+	setConnectHandler: setConnectHandler
     };
 }
 
