@@ -222,7 +222,6 @@ function editableList(ret, model, listItem) {
 
     ret.setModel = function (newModel) {
 	var i = 0;
-	var editMode = ret.getEditMode();
 
 	ret.setEditMode(false);
 
@@ -246,8 +245,6 @@ function editableList(ret, model, listItem) {
 
 	    model.forEach(function (item) { itemAdded(i++, item); });
 	}
-
-	ret.setEditMode(editMode);
     };
 
     ret.setSelected = function (item) {
