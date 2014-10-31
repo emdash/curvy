@@ -213,7 +213,7 @@ function editableList(ret, model, listItem) {
     ret.setEditMode = function (mode) {
 	var li;
 
-	ret.setAttribute("editable", mode);
+	ret.setAttribute("editable", mode ? "true" : "false");
 
 	for (li = ret.firstChild; li !== null; li = li.nextSibling) {
 	    li.setEditable && li.setEditable(mode);
